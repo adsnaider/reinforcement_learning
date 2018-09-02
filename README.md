@@ -1,1 +1,1 @@
-## Reainforcement Learning Library with TensorFlow
+## Reinforcement Learning Library with TensorFlow
