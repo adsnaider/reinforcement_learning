@@ -1,9 +1,14 @@
+"""Agent abstract class.
+"""
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from typing import Optional
 
-class Agent(object):
+
+class Agent:
   """Agent abstract class
 
   This is a simple abstract definition for the Agents.
@@ -11,7 +16,7 @@ class Agent(object):
   to be an agent.
   """
 
-  def train(self, steps):
+  def train(self, steps: int) -> None:
     """Runs the training loop.
 
     This method runs the training loop "steps" times.
@@ -21,10 +26,10 @@ class Agent(object):
     """
     raise NotImplementedError
 
-  def play(self, steps):
+  def play(self, steps: Optional[int]) -> None:
     """Play in the environment.
 
     Args:
-      steps: For how many steps to play.
+      steps: For how many steps to play. If None, then play until done.
     """
     raise NotImplementedError
