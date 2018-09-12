@@ -10,6 +10,7 @@ from typing import Tuple
 
 # Used on definition of observation_space
 import numpy as np  # pylint: disable=unused-import
+import gym  # pylint: disable=unused-import
 
 
 class Environment:
@@ -20,8 +21,8 @@ class Environment:
     be implemented by an environment to be used.
   """
 
-  observation_space = None  # type: np.array
-  action_space = None  # type: np.array
+  observation_space: gym.Space
+  action_space: gym.Space
 
   @abstractmethod
   def reset(self) -> np.array:

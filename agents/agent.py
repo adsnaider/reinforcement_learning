@@ -16,7 +16,7 @@ class Agent:
   to be an agent.
   """
 
-  def train(self, steps: int) -> None:
+  def train(self, steps: int, render: bool = True) -> None:
     """Runs the training loop.
 
     This method runs the training loop "steps" times.
@@ -26,7 +26,7 @@ class Agent:
     """
     raise NotImplementedError
 
-  def play(self, steps: Optional[int]) -> None:
+  def play(self, steps: Optional[int], render: bool = True) -> None:
     """Play in the environment.
 
     Args:

@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from typing import Type
+
 import cv2
 import gym
 import numpy as np
@@ -17,8 +19,10 @@ class Pong(Environment):
   """
 
   def __init__(self):
-    self.env = gym.make('Pong-v4')
-    self.observation_space = self.env.observation_space
+    self.env: Type[gym.Env] = gym.make('Pong-v0')
+    # We make it grayscale
+    self.observation_space = gym.spaces.Box(
+        0.0, 1.0, [210, 160, 1], dtype=np.float32)
     self.action_space = self.env.action_space
 
   def reset(self):
@@ -29,7 +33,8 @@ class Pong(Environment):
 
   def step(self, action):
     if self.env.action_space.contains(action):
-      return self._process_observation(self.env.step(action))
+      state, reward, done, info = self.env.step(action)
+      return self._process_observation(state), reward, done, info
     raise ValueError("Action is invalid")
 
   def close(self):
@@ -37,4 +42,6 @@ class Pong(Environment):
 
   @staticmethod
   def _process_observation(observation: np.array) -> np.array:
-    return cv2.cvtColor(observation, cv2.COLOR_BGR2GRAY) / 255.0
+    return np.expand_dims(
+        cv2.cvtColor(observation, cv2.COLOR_BGR2GRAY) / 255.0, axis=-1)
+    # return observation / 255.0

@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from typing import Type
 from abc import abstractmethod
 
 import tensorflow as tf
@@ -17,32 +18,32 @@ class Network:
   considered a Network.
   """
 
-  outputs = None  # type: tf.Tensor
+  outputs: tf.Tensor
+  name: str
 
   @abstractmethod
-  def __init__(self, inputs: tf.Tensor) -> None:
+  def __init__(self, inputs: tf.Tensor, name: str, trainable: bool) -> None:
     pass
 
-  @abstractmethod
-  def create_graph(self) -> None:
-    """Creates the Network Graph.
-
-    This method creates the TensorFlow computation graph.
-    It will populate the output nodes of the graph.
-    """
-    pass
-
-  @abstractmethod
-  def from_copy(self, other: Network):
-    """Create a copy operation from another network.
-
-    This method creates an operation that, when run, will copy all the
-    trainable variables from "other" into self.
+  def make_copy_op(self, other: Type['Network']) -> tf.Operation:
+    """Creates an operation that can be used to copy the variables from one network to another.
 
     Args:
-      other: Network object of the same class from which to copy the variables.
-
+      other: Network to get variables from.
     Returns:
-      The copy operation
+      An operation that when run will copy the vars from the other network
     """
-    pass
+    self_vars = tf.get_collection(
+        tf.GraphKeys.TRAINABLE_VARIABLES, scope=self.name)
+
+    other_vars = tf.get_collection(
+        tf.GraphKeys.TRAINABLE_VARIABLES, scope=other.name)
+
+    if len(self_vars) != len(other_vars):
+      raise ValueError("Invalid network")
+
+    copy_ops = []
+    for i, _ in enumerate(self_vars):
+      copy_ops.append(tf.assign(self_vars[i], other_vars[i]))
+
+    return tf.group(copy_ops)
