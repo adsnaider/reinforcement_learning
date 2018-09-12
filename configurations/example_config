@@ -1,0 +1,19 @@
+agent {
+  type: DEEP_Q
+  deep_q {
+    learning_rate: 0.001
+    gamma: 0.99
+    initial_epsilon: 1.0
+    epsilon_decay_rate: 0.98
+    epsilon_decay_step: 500
+    checkpoint_dir: "checkpoints/pong-v0"
+    memory_size: 500
+    final_epsilon: 0.01
+    observation_time: 300
+    batch_size: 16
+  }
+}
+env {
+  type: ATARI
+  name: "Hello world"
+}

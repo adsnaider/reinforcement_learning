@@ -1,0 +1,72 @@
+syntax = 'proto2';
+
+package protos;
+
+message Configuration {
+  message Network {
+    enum NetworkType {
+      UNKNOWN_NETWORK = 0;
+      CONV = 1;
+      DENSE = 2;
+    }
+
+    optional NetworkType type = 1;
+
+    message Convolutional {
+      repeated int32 hidden_layers = 1;
+      optional int32 kernel_size = 2;
+      optional int32 pool_size = 3;
+      optional string activation = 4;
+    }
+
+    message Dense {
+      repeated int32 hidden_layers = 1;
+      optional string activation = 2;
+    }
+    oneof network {
+      Convolutional conv = 2;
+      Dense dense = 3;
+    }
+
+  }
+
+  message Agent {
+    enum AgentType {
+      UNKNOWN_AGENT = 0;
+      DEEP_Q = 1;
+    }
+
+    optional AgentType type = 1;
+
+    // Next ID: 12
+    message DeepQ {
+      optional double learning_rate = 1;
+      optional double gamma = 2;
+      optional Network network = 3;
+      optional string checkpoint_dir = 4;
+      optional int32 memory_size = 5;
+      optional double final_epsilon = 6;
+      optional double epsilon_decay_rate = 9;
+      optional int32 epsilon_decay_step = 10;
+      optional double initial_epsilon = 11;
+      optional int32 observation_time = 7;
+      optional int32 batch_size = 8;
+    }
+
+    oneof agent {
+      DeepQ deep_q = 2;
+    }
+  }
+
+  message Environment {
+    enum EnvironmentType {
+      UNKNOWN_ENVIRONMENT = 0;
+      ATARI = 1;
+    }
+
+    optional EnvironmentType type = 1;
+    optional string name = 2;
+  }
+  optional Agent agent = 1;
+  optional Environment env = 2;
+}
