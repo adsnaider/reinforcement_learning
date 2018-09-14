@@ -8,6 +8,7 @@ from __future__ import division
 from __future__ import print_function
 
 from typing import Any, Optional, Callable, Type
+import time
 
 import numpy as np
 import tensorflow as tf
@@ -132,13 +133,18 @@ class DeepQLearner(Agent):
                 step, loss, epsilon))
     self.env.close()
 
-  def play(self, steps: Optional[int], render: bool = True) -> None:
+  def play(self,
+           steps: Optional[int],
+           render: bool = True,
+           frame_rate: Optional[int] = None) -> None:
     state = self.env.reset()
     saver = tf.train.Saver()
     with tf.Session() as sess:
       saver.restore(sess, tf.train.latest_checkpoint(self.checkpoint_dir))
       done = False
       while not done:
+        if frame_rate:
+          time.sleep(1 / frame_rate)
         action = self._get_best_action(sess, np.expand_dims(state, axis=0))
         state, _, done, info = self.env.step(np.squeeze(action))
         if render:

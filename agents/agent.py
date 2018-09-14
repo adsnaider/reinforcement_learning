@@ -26,7 +26,10 @@ class Agent:
     """
     raise NotImplementedError
 
-  def play(self, steps: Optional[int], render: bool = True) -> None:
+  def play(self,
+           steps: Optional[int],
+           render: bool = True,
+           frame_rate: Optional[int] = None) -> None:
     """Play in the environment.
 
     Args:
